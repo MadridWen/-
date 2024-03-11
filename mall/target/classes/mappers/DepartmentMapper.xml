@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 为DepartmentMapper接口提供映射配置 -->
+<mapper namespace="cn.edu.hrbu.mall.mapper.DepartmentMapper">
+    <insert id="insert">
+        insert into dept(deptno, dname, loc) values(#{deptno}, #{dname}, #{loc})
+    </insert>
+    <update id="update">
+        update dept set dname = #{dname}, loc = #{loc} where deptno = #{deptno}
+    </update>
+    <delete id="delete">
+        delete from dept where deptno = #{param1}
+    </delete>
+
+    <!-- mybatis的预编译SQL使用#{}占位符，而不是JDBC的？占位符 -->
+    <select id="selectByID" resultType="cn.edu.hrbu.mall.entity.Department">
+        select * from dept where deptno = #{param1}
+    </select>
+    <select id="selectAll" resultType="cn.edu.hrbu.mall.entity.Department">
+        select * from dept
+    </select>
+
+    <!-- 在mybatis里，like查询使用${}占位符，取代#{} -->
+    <select id="selectByDname" resultType="cn.edu.hrbu.mall.entity.Department">
+        select * from dept where dname like '%${dname}%'
+    </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.hrbu.mall.mapper.EmployeeMapper">
+
+    <insert id="batchInsert">
+        insert into emp values
+        <foreach collection="list" item="emp" separator=",">
+            (NULL, #{emp.empName}, #{emp.job}, #{emp.manager}, #{emp.hiredate}, #{emp.salary}, #{emp.comm}, #{emp.deptNo})
+        </foreach>
+    </insert>
+    <select id="selectListInIds" resultType="cn.edu.hrbu.mall.entity.Employee">
+        select * from emp where emp_no in
+        <foreach collection="list" item="empno" open="(" close=")" separator=",">
+            #{empno}
+        </foreach>
+    </select>
+</mapper>

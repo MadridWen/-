@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!--主配置文件,一个项目只有一个-->
+<configuration>
+    <!-- 引入属性文件 -->
+    <properties resource="jdbc.properties">
+        <!--在读取属性文件的前提下对属性修改或者拓展-->
+        <property name="db_type" value="mysql"/>
+    </properties>
+    <settings>
+        <!-- 操作时在控制台打印sql语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- 启用mybatis的驼峰映射，自动将_映射成驼峰形式 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 开启二级缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 开启懒加载 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+    </settings>
+
+    <!-- 给实体类配置别名，便于使用 -->
+    <typeAliases>
+        <!-- 为每个实体类分别配置别名 -->
+        <typeAlias alias="Department" type="cn.edu.hrbu.mall.entity.Department"/>
+        <typeAlias alias="Employee" type="cn.edu.hrbu.mall.entity.Employee"/>
+        <!-- 或者直接指定实体类所在的包，就不用分别设置别名了 -->
+        <package name="cn.edu.hrbu.mall.entity"/>
+    </typeAliases>
+
+    <plugins>
+        <!-- 分页插件 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+    </plugins>
+
+    <!-- 配置项目的数据源，default指定默认 -->
+    <environments default="mall">
+        <!-- 项目的数据源,用唯一的id来加以区分 -->
+        <environment id="mall">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 设计映射文件 -->
+    <mappers>
+        <mapper resource="mappers/DepartmentMapper.xml"/>
+        <mapper resource="mappers/EmployeeMapper.xml"/>
+<!--        <mapper class="cn.edu.hrbu.mall.mapper.EmployeeMapper"/>-->
+    </mappers>
+</configuration>
