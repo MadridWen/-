@@ -1,2 +1,2 @@
-# Study-Mybatis
+# Study-MybatisAndSpring
 学习ing
