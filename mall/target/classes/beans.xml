@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 配置类的源数据标签
+        class属性：类的全路径
+        id或name属性：给bean起的较短的名称
+        init-method属性：指定bean初始化时调用的方法
+        destroy-method属性：指定bean销毁时调用的方法, 仅对singleton有效
+        lazy-init属性：是否延迟加载, 默认是false
+            spring在创建IOC容器时, 会创建singleton作用域的bean, 满足立即加载, 但不会创建prototype作用域的bean
+        autowire属性：自动装配, 默认是no, 有byName, byType, constructor, autodetect
+            byName:根据类的属性类型进行检索，查找容器中满足注入条件的bean
+            byType:根据类的属性名进行检索，查找容器中满足注入条件的bean
+            constructor:根据构造器进行自动装配
+            autodetect:根据构造器和属性进行自动装配
+    -->
+    <bean id="huaweiComputer" class="cn.edu.hrbu.mall.entity.Computer" scope="singleton" init-method="a" destroy-method="b"
+    lazy-init="true" autowire="byType">
+        <!-- property标签：给bean的属性赋值
+            name属性：属性名
+            value属性：属性值
+            ref属性：引用其他bean, 用于依赖注入
+            scope属性：配置bean的作用域, 默认是singleton（单例）。还有prototype（多例）
+        -->
+        <property name="type" value="Matebook D16"/>
+        <property name="brand" value="HUAWEI"/>
+        <property name="price" value="7999"/>
+        <property name="ram" value="16"/>
+        <property name="rom" value="512GB"/>
+        <!-- 依赖注入,手动注入需要ref -->
+<!--        <property name="usbStorage" ref="upan"/>-->
+    </bean>
+
+    <!-- U盘
+        autowire-candidate属性：是否参与自动装配, 默认是true
+            如果有多个bean满足自动装配条件, 会使用autowire-candidate为true的bean
+            spring会忽略autowire-candidate为false的bean
+    -->
+    <bean id="upan" class="cn.edu.hrbu.mall.entity.Upan" scope="prototype" autowire-candidate="false"></bean>
+
+    <!-- 别名 -->
+    <alias name="upan" alias="usbStorage"></alias>
+
+    <!-- 移动硬盘
+        primary属性：当有多个bean满足自动装配条件时, 优先使用primary为true的bean
+    -->
+    <bean id="md" class="cn.edu.hrbu.mall.entity.MobileDisk" scope="prototype" primary="true"></bean>
+
+    <!-- 引入其他配置文件 -->
+    <import resource="Factory.xml"></import>
+</beans>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 静态方法模式 -->
+    <bean id="hpComputer" class="cn.edu.hrbu.mall.factory.ComputerFactoryA" factory-method="create"></bean>
+
+    <!-- 实例方法模式 -->
+    <bean id="ComputerFactoryB" class="cn.edu.hrbu.mall.factory.ComputerFactoryB" scope="singleton"></bean>
+    <bean id="dellComputer" factory-bean="ComputerFactoryB" factory-method="getObject"></bean>
+</beans>
