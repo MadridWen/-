@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加员工</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/vue.js"></script>
+    <script type="text/javascript" src="/js/axios.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>填写员工信息表单</h1>
+        <form class="needs-validation" novalidate>
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="validationCustom01">员工姓名</label>
+                    <input v-model="employee.empName" type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="validationCustom03">部门</label>
+                    <!-- 重新选择部门刷新直属领导列表 -->
+                    <select @change="loadEmpList()" v-model="employee.deptNo" class="form-control" id="validationCustom03" required>
+<!--                        <option value="">请选择部门</option>-->
+                        <option v-for="dept in deptList" :value="dept.deptno">{{ dept.dname + '{' + dept.loc + '}'}}</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="validationCustom02">职务</label>
+                    <input v-model="employee.job" type="text" class="form-control" id="validationCustom02" value="Otto" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="validationCustom04">直属领导</label>
+                    <select v-model="employee.manager" class="custom-select" id="validationCustom04" required>
+                        <option v-for="emp in empList" :value="emp.empNo">{{emp.empName + '[' +emp.job + ']'}}</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="validationCustom05">入职日期</label>
+                    <input v-model="employee.hiredate" type="date" class="form-control" id="validationCustom05" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="validationCustom06">工资</label>
+                    <input v-model="employee.salary" type="number" min="0" class="form-control" id="validationCustom06" placeholder="1000" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="validationCustom07">奖金</label>
+                    <input v-model="employee.comm" type="number" min="0" class="form-control" id="validationCustom07" placeholder="1000" required>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="button" @click="addEmp()">提交</button>
+            <a class="btn-link" href="EmpAdmin.html">返回列表页</a>
+        </form>
+    </div>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            deptList:[],
+            empList:[],
+            employee:{
+
+            }
+        },
+        mounted(){
+            this.loadDeptList() //页面加载时，加载部门列表
+        },
+        methods:{
+            addEmp(){
+                axios.post('/emp/add',this.employee)
+                    .then(response => {
+                        if(response.data.isOk == true){
+                            alert('添加成功，员工信息已存入数据库')
+                        }else{
+                            alert('添加失败')
+                        }
+
+                    })
+            },
+            loadEmpList(){
+                axios.get('emp/list/' + this.employee.deptNo)
+                    .then(response => {
+                        this.empList = response.data
+                    })
+            },
+            loadDeptList(){
+                axios.get('/emp/allDept')
+                    .then(response => {
+                        this.deptList = response.data
+                    })
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理页</title>
+    <!--如何检查引用的路径是否准确：按照Ctrl，鼠标是否能点进去-->
+    <!-- CSS -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/vue.js"></script>
+    <script type="text/javascript" src="/js/axios.js"></script>
+</head>
+<body>
+<!-- bootstrap表单 -->
+<div id="app" class="container">
+    <h1>员工列表</h1>
+    <form class="form-inline">
+        <div class="form-group mb-2">
+            <label for="staticEmail2">员工姓名&nbsp;</label>
+            <input v-model="ename" type="text" class="form-control" id="staticEmail2" placeholder="输入员工姓名">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="inputPassword2">职务&nbsp; </label>
+            <select v-model="job" id="inputPassword2" class="form-control">
+                <option value="">全部</option>
+                <option>老师</option>
+                <option>学生</option>
+                <option>程序员</option>
+            </select>
+        </div>
+        <button @click="searchList()" type="button" class="btn btn-primary mb-2">查找</button>
+        <a href="EmpAdd.html" class="btn btn-success mb-2">新员工入职</a>
+    </form>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>姓名</th>
+            <th>职务</th>
+            <th>入职日期</th>
+            <th>工资</th>
+            <th>奖金</th>
+            <th>部门</th>
+            <th>工作城市</th>
+            <th class="text-center" colspan="2">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="emp in empList">
+            <td>{{ emp.empNo }}</td>
+            <td>{{ emp.empName }}</td>
+            <td>{{ emp.job }}</td>
+            <td>{{ emp.hiredate }}</td>
+            <td>{{ emp.salary }}</td>
+            <td>{{ emp.comm }}</td>
+            <td>{{ emp.department.dname }}</td>
+            <td>{{ emp.department.loc }}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" @click="delEmp(emp.empNo,emp.empName)">删除</button>
+            </td>
+            <td>
+                <button class="btn btn-link btn-sm" @click="editEmp(emp.empNo)">修改</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- 分页 -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li :class="pageInfo.hasPreviousPage?'page-item':'page-item disabled'">
+                <a v-if="pageInfo.hasPreviousPage" class="page-link" href="#"
+                   @click="goto(pageInfo.prePage)">Previous</a>
+                <span v-else class="page-link">Previous</span>
+            </li>
+            <li class="page-item" v-for="page in pageInfo.navigatepageNums">
+                <span disabled class="page-link bg-primary" style="color:white"
+                      v-if="page==pageInfo.pageNum">{{page}}</span>
+                <!-- 通过@click绑定点击事件 -->
+                <a v-else class="page-link" href="#" @click="goto(page)">{{page}}</a>
+            </li>
+            <li :class="pageInfo.hasNextPage?'page-item':'page-item disabled'">
+                <a v-if="pageInfo.hasNextPage" class="page-link" href="#" @click="goto(pageInfo.nextPage)">Next</a>
+                <span v-else class="page-link">Next</span>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script type="text/javascript">
+    // 创建Vue实例
+    var app = new Vue({
+        el: '#app', // 声明当前的vue对象和前面的容器标签绑定
+        data: { // 用来渲染到网页的数据
+            ename: "",
+            job: "",
+            empList: [],
+            pageInfo: {
+                pageNum: 1,
+                pageSize: 5
+            }
+        },
+        mounted() { // 当页面加载完毕后，自动执行的函数
+            this.searchList();
+        },
+        methods: { //vue对象中包含的函数
+            goto(page) { // 点击页码跳转
+                this.pageInfo.pageNum = page; // 修改当前页码
+                this.searchList(); // 重新查询员工列表
+            },
+            searchList() { // 查询员工列表
+                let url = "/emp/list";
+                axios.get(url, {
+                        "params": {
+                            "ename": this.ename,
+                            "job": this.job,
+                            "pageNum": this.pageInfo.pageNum,
+                            "pageSize": this.pageInfo.pageSize
+                        }
+                    }
+                ).then((response) => {
+                        // 将返回数据赋值给empList
+                        this.empList = response.data.list;
+                        this.pageInfo = response.data;
+                    }
+                )
+            },
+            delEmp(empNo, empName) { // 删除员工
+                let isDel = window.confirm("确认删除" + empNo + ":" + empName + "吗？");
+                if (isDel) {
+                    let params = "?empNo=" + empNo;
+                    axios.post("/emp/delete" + params )
+                        .then(response => {
+                            if (response.data.isOk) {
+                                alert("删除成功");
+                                for (const i in empList) { // 遍历empList
+                                    if (this.empList [i].empNo == empNo) { // 找到要删除的员工
+                                        // this.empList.splice(i, 1); // 从第i个位置开始删除一个元素
+                                        delete this.empList[i]; // 删除
+                                        break;
+                                    }
+                                }
+                                this.searchList();
+                            } else {
+                                alert("删除失败");
+                            }
+                        })
+                }
+            },
+            editEmp(empNo) { // 修改员工
+                // 将empNo存入sessionStorage，便于在下一个页面中获取到员工信息
+                window.sessionStorage.setItem("empNo", empNo);
+                // 跳转到EmpUpdate.html页面
+                // window.open("EmpUpdate.html", "_self"); // _self表示在当前窗口打开
+                window.open("EmpUpdate.html");
+            }
+
+
+        },
+    });
+</script>
+</body>
+</html>

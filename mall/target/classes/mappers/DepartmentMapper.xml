@@ -16,7 +16,7 @@
     </delete>
 
     <!-- mybatis的预编译SQL使用#{}占位符，而不是JDBC的？占位符 -->
-    <select id="selectByID" resultType="cn.edu.hrbu.mall.entity.Department">
+    <select id="selectById" resultType="cn.edu.hrbu.mall.entity.Department">
         select * from dept where deptno = #{param1}
     </select>
     <select id="selectAll" resultType="cn.edu.hrbu.mall.entity.Department">
