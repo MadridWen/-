@@ -1,0 +1,49 @@
+# yml是一种接近json,自然语言的数据格式，它是一种标记语言，它的数据结构和python的字典类似
+# 在spring boot应用开发中和properties文件一样，yml文件也是用来配置应用的属性的
+spring:
+  application:
+    name: hrbu_mall # 应用名称
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.229.128:3306/mall?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+# 配置mybatis的数据源
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  # 声明mybatis的mapper文件的位置
+  mapper-locations: classpath:mappers/*.xml
+  # 声明mybatis的别名包
+  type-aliases-package: cn.hrbu.mall.entity
+
+# 配置分页插件
+pagehelper:
+  auto-dialect: true
+  reasonable: true
+
+# 配置mybatis-plus
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 配置swagger
+swagger:
+  enabled: true
+  pathMapping:
+
+# 权限认证时需要执行的请求路径
+auth:
+  excludePaths:
+    - /ums/member/login
+    - /ums/member/register
+    - /sms/homeRecommendProduct/homeList
+    - /sms/homeBrand/homeList
+    - /sms/homeAdvertise/homeList
+    - /sms/homeNewProduct/homeList
+    - /pms/product/list
+    - /pms/productCategory/navTree
+    - /pms/comment/list
