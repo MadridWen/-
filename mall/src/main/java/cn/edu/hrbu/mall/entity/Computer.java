@@ -3,12 +3,16 @@ package cn.edu.hrbu.mall.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import java.util.Random;
 
 @Data
@@ -16,9 +20,10 @@ import java.util.Random;
 @AllArgsConstructor
 // 定义bean的注解有4个，分别是@Component、@Service（业务）、@Repository（数据访问对象，如基于mybatis框架编写的Mapper上）、@Controller（控制器）
 @Component // 用于标注一个普通的bean类(泛指所有的组件)，表明这个类会被Spring进行管理
+@Lazy(value = false)// 用于指定bean的延迟加载，即在第一次使用时才进行初始化,作用和xml配置文件中的lazy-init属性一样，只针对单类bean有用
 @Scope("prototype") // 用于指定bean的作用范围，prototype表示多例，作用和xml配置文件中的scope属性一样
 public class Computer {
-    @Value("E460") // value注解用于为属性注入值
+    @Value("联想E460") // value注解用于为属性注入值
     private String type; //型号
     @Value("Lenovo")
     private String brand; //品牌
@@ -29,6 +34,15 @@ public class Computer {
     @Value("512G")
     private String rom; //硬盘
     private int no = new Random().nextInt(10000); //随机生成一个编号
+    /**
+     * 基于注解的依赖注入
+     * @Autowired
+     * @Qualifier
+     * @Resource
+     */
+//    @Autowired // 自动装配，根据类型进行自动装配
+//    @Qualifier("upan2") // 跟在Autowired之后，用于指定自动装配的bean的id,byName装配
+    @Resource(type = MobileDisk.class) // 跟在Autowired之后，用于指定自动装配的bean的id,byType装配
     private UsbStorage usbStorage; //USB存储设备,面向接口编程,满足依赖倒置原则
     public Computer() {
         System.out.println("调用构造器，实例化对象");

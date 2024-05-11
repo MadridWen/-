@@ -1,6 +1,9 @@
 package cn.edu.hrbu.mall.entity;
 
+import org.springframework.stereotype.Component;
+
 // U盘类
+@Component("upan2")
 public class Upan implements UsbStorage{
     @Override
     public void read() {
