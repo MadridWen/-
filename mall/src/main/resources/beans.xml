@@ -37,6 +37,8 @@
         autowire-candidate属性：是否参与自动装配, 默认是true
             如果有多个bean满足自动装配条件, 会使用autowire-candidate为true的bean
             spring会忽略autowire-candidate为false的bean
+        parent属性：指定父bean
+        depends-on属性：指定依赖的bean
     -->
     <bean id="upan" class="cn.edu.hrbu.mall.entity.Upan" scope="prototype" autowire-candidate="false"></bean>
 
