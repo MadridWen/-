@@ -1,3 +1,2 @@
-# Study-MybatisAndSpring
-学习ing  
-在线商城项目
+# 在线商城项目
+基于SpringBoot框架实现的在线商城项目的后端代码
